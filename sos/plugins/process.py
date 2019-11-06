@@ -28,6 +28,8 @@ class Process(Plugin, RedHatPlugin, DebianPlugin, UbuntuPlugin):
         ps_group_opts = "pid,ppid,user,group,lwp,nlwp,start_time,comm,cgroup"
         ps_sched_opts = "flags,state,uid,pid,ppid,pgid,sid,cls,pri,addr,sz,"
         ps_sched_opts += "wchan,lstart,tty,time,cmd"
+        # keep wchan at the tail position in case wchan is trancated.
+        ps_wait_opts  = "pid,ppid,lstart,time,cmd,wchan"
 
         self.add_copy_spec([
             "/proc/sched_debug",
@@ -47,7 +49,8 @@ class Process(Plugin, RedHatPlugin, DebianPlugin, UbuntuPlugin):
             "ps alxwww",
             "ps -elfL",
             "%s %s" % (ps_axo, ps_group_opts),
-            "%s %s" % (ps_axo, ps_sched_opts)
+            "%s %s" % (ps_axo, ps_sched_opts),
+            "%s %s" % (ps_axo, ps_wait_opts)
         ])
 
 # vim: set et ts=4 sw=4 :
